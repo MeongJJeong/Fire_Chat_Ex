@@ -20,7 +20,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        String splash_background=mFirebaseRemoteConfig.getString("splash_background");
+        String splash_background=mFirebaseRemoteConfig.getString(getString(R.string.rc_color));
         getWindow().setStatusBarColor(Color.parseColor(splash_background));
 
         login=(Button)findViewById(R.id.login_btn_login);
