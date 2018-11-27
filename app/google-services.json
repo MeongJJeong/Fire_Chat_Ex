@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "743565845963-fjtce8hve65tj24bpq1vbcek894lmpvl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bluetank.fire_chat_ex",
+            "certificate_hash": "e2c4762d37e736745fa9dbea2c9e5ce4b01b35d5"
+          }
+        },
+        {
           "client_id": "743565845963-l9k2g35ma5ok71ism3i802dbq8is1vhh.apps.googleusercontent.com",
           "client_type": 3
         }

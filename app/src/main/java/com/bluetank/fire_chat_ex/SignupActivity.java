@@ -19,6 +19,10 @@ public class SignupActivity extends AppCompatActivity {
 
     private EditText name,email,pw;
     private Button signup;
+    private FirebaseAuth mAuth;
+    private String str1,str2;
+
+    Button test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,26 @@ public class SignupActivity extends AppCompatActivity {
         email=(EditText)findViewById(R.id.signup_edt_email);
         pw=(EditText)findViewById(R.id.signup_edt_pw);
         signup=(Button)findViewById(R.id.signup_btn_signup);
+        mAuth=FirebaseAuth.getInstance();
+
+
+
+
+        test=(Button)findViewById(R.id.signup_btn_test);
+
+         test.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 if(name.getText().length()==0||email.getText().length()==0||pw.getText().length()==0){
+                     Toast.makeText(getApplicationContext(),"입력 바로하세욧!",Toast.LENGTH_SHORT).show();
+                     return;
+                 }else {
+                     Toast.makeText(getApplicationContext(),email.getText().toString()+" "+name.getText().toString()+" "+pw.getText().toString(),Toast.LENGTH_SHORT).show();
+                 }
+             }
+         });
+
+
 
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,20 +61,22 @@ public class SignupActivity extends AppCompatActivity {
                 if(name.getText().length()==0||email.getText().length()==0||pw.getText().length()==0){
                     Toast.makeText(getApplicationContext(),"입력 바로하세욧!",Toast.LENGTH_SHORT).show();
                     return;
-                }
+                }else {
+                    str1=email.getText().toString();
+                    str2=pw.getText().toString();
 
-                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email.getText().toString(),pw.getText().toString())
-                        .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-//                                UserModel usermodel=new UserModel();
-//                                usermodel.userName=name.getText().toString();
-////
-//                                String uid=task.getResult().getUser().getUid();
-//                                FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(usermodel);
-                            }
-                        });
+                    mAuth.createUserWithEmailAndPassword(str1,str2)
+                            .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    
+
+                                }
+                            });
+                }
             }
         });
     }
+
+
 }
