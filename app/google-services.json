@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "743565845963",
+    "firebase_url": "https://firechatex-a3747.firebaseio.com",
+    "project_id": "firechatex-a3747",
+    "storage_bucket": "firechatex-a3747.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:743565845963:android:5b9f355fb7f63c72",
+        "android_client_info": {
+          "package_name": "com.bluetank.fire_chat_ex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "743565845963-p8rcrkoaam4qqpeje7rptbbjsfibs5qq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bluetank.fire_chat_ex",
+            "certificate_hash": "cd63502e4e9abd9364ac98a5345cd7a13e1ed0c8"
+          }
+        },
+        {
+          "client_id": "743565845963-l9k2g35ma5ok71ism3i802dbq8is1vhh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQX-vXq-GSIyTUH65GBbnP-XpRUw9q55w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "743565845963-l9k2g35ma5ok71ism3i802dbq8is1vhh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
