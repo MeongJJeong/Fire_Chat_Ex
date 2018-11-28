@@ -16,12 +16,14 @@ import android.widget.Toast;
 
 import com.bluetank.fire_chat_ex.model.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 public class SignupActivity extends AppCompatActivity {
@@ -73,23 +75,34 @@ public class SignupActivity extends AppCompatActivity {
                     str2=pw.getText().toString();
                     str3=name.getText().toString();
 
-                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(str1,str2)
+                    FirebaseAuth.getInstance()
+                            .createUserWithEmailAndPassword(str1,str2)
                             .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
 
                                     final String uid=task.getResult().getUser().getUid();
-                                    FirebaseStorage.getInstance().getReference().child("userImages").child(uid).putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+
+                                    final StorageReference profileImageRef=FirebaseStorage.getInstance().getReference().child("userImages").child(uid);
+                                    profileImageRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
 
-                                            String imageUrl=task.getResult().getUploadSessionUri().toString();
+                                            Task<Uri> uriTask=profileImageRef.getDownloadUrl();
+                                            while (!uriTask.isSuccessful());
+                                            Uri downloadUrl=uriTask.getResult();
+                                            String imageUrl=String.valueOf(downloadUrl);
 
                                             UserModel user=new UserModel();
                                             user.userName=str3;
                                             user.profileImageUrl=imageUrl;
 
-                                            FirebaseDatabase.getInstance().getReference().child("user").child(uid).setValue(user);
+                                            FirebaseDatabase.getInstance().getReference().child("user").child(uid).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    SignupActivity.this.finish();
+                                                }
+                                            });
                                         }
                                     });
                                 }
@@ -100,7 +113,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode,Intent data) {
        if(requestCode==PICK_FROM_ALBUM&&resultCode==RESULT_OK){
            profile.setImageURI(data.getData()); //가운데 뷰 변경
            imageUri=data.getData(); //이미지 경로 원본
