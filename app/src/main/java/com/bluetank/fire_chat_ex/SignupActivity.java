@@ -33,8 +33,6 @@ public class SignupActivity extends AppCompatActivity {
     private ImageView profile;
     private Uri imageUri;
 
-    Button test;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
