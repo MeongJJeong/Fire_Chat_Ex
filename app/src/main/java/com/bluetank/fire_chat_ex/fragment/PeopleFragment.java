@@ -3,7 +3,6 @@ package com.bluetank.fire_chat_ex.fragment;
 //import android.app.Fragment;
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,7 +20,7 @@ import com.bluetank.fire_chat_ex.chat.MessageActivity;
 import com.bluetank.fire_chat_ex.model.UserModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -46,16 +45,23 @@ public class PeopleFragment extends Fragment {
 
     class PeopleFragmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-        List<UserModel> userModel;
+        List<UserModel> userModels;
 
         public PeopleFragmentRecyclerViewAdapter(){
-            userModel=new ArrayList<>();
+            userModels =new ArrayList<>();
+            final String myUid=FirebaseAuth.getInstance().getCurrentUser().getUid(); //내 uid
             FirebaseDatabase.getInstance().getReference().child("user").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    userModel.clear(); //초기화 해줘야 중복이 안발생
+                    userModels.clear(); //초기화 해줘야 중복이 안발생
+
                     for(DataSnapshot snapshot :dataSnapshot.getChildren()){
-                        userModel.add(snapshot.getValue(UserModel.class));
+
+                        UserModel userModel=snapshot.getValue(UserModel.class);
+                        if(userModel.uid.equals(myUid)){  //내 uid와 같을경우 목록에 추가하지않고 진행
+                            continue;
+                        }
+                        userModels.add(userModel);
                     }
                     notifyDataSetChanged();//새로고침
                 }
@@ -75,19 +81,20 @@ public class PeopleFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
+        public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int i) {
 
             Glide.with(viewHolder.itemView.getContext())
-                    .load(userModel.get(i).profileImageUrl)
+                    .load(userModels.get(i).profileImageUrl)
                     .apply(new RequestOptions().circleCrop())
                     .into(((CustomViewHolder)viewHolder).image);
 
-            ((CustomViewHolder) viewHolder).text.setText(userModel.get(i).userName);
+            ((CustomViewHolder) viewHolder).text.setText(userModels.get(i).userName);
 
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent=new Intent(view.getContext(),MessageActivity.class);
+                    intent.putExtra("destinationUid", userModels.get(i).uid);
                     ActivityOptions activityOptions=ActivityOptions.makeCustomAnimation(view.getContext(),R.anim.fromright,R.anim.toleft);
                     startActivity(intent,activityOptions.toBundle());
                 }
@@ -96,7 +103,7 @@ public class PeopleFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return userModel.size();
+            return userModels.size();
         }
 
         private class CustomViewHolder extends RecyclerView.ViewHolder {

@@ -96,6 +96,7 @@ public class SignupActivity extends AppCompatActivity {
                                             UserModel user=new UserModel();
                                             user.userName=str3;
                                             user.profileImageUrl=imageUrl;
+                                            user.uid=FirebaseAuth.getInstance().getCurrentUser().getUid(); //uid가 뭘까? 채팅할때 사용된다고함
 
                                             FirebaseDatabase.getInstance().getReference().child("user").child(uid).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
