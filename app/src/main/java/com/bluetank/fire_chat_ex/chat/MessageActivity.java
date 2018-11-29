@@ -5,24 +5,37 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bluetank.fire_chat_ex.R;
 import com.bluetank.fire_chat_ex.model.ChatModel;
+import com.bluetank.fire_chat_ex.model.UserModel;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -33,6 +46,8 @@ public class MessageActivity extends AppCompatActivity {
 
     private String uid;
     private String chatRoomuid;
+
+    private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy.MM.dd.HH:mm"); //날짜 포멧 설정
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +81,14 @@ public class MessageActivity extends AppCompatActivity {
                     ChatModel.Comment comment=new ChatModel.Comment();
                     comment.uid=uid;
                     comment.message=edt.getText().toString();
-                    FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomuid).child("comments").push().setValue(comment);
-                    edt.setText(null);
+                    comment.time=ServerValue.TIMESTAMP; //Firebase에서 지원하는 method
+                    FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomuid).child("comments").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            edt.setText(null);  //입력부 초기화
+                        }
+                    });
                 }
-
             }
         });
         checkChatRoom();
@@ -101,9 +120,26 @@ public class MessageActivity extends AppCompatActivity {
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
         List<ChatModel.Comment> comments;
+        UserModel user;
+
         public RecyclerViewAdapter(){
             comments=new ArrayList<>();
 
+            FirebaseDatabase.getInstance().getReference().child("user").child(destinationUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    user=dataSnapshot.getValue(UserModel.class);
+                    getMessageList();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+        void getMessageList(){
             FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomuid).child("comments").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {  //읽어들인 데이터는 이곳으로 이동
@@ -113,6 +149,7 @@ public class MessageActivity extends AppCompatActivity {
                         comments.add(item.getValue(ChatModel.Comment.class));
                     }
                     notifyDataSetChanged(); //데이터 갱신
+                    recyclerView.scrollToPosition(comments.size()-1); //대화목록을 최신판으로 갱신, comment-1이 가장 최근 보낸 메세지
                 }
 
                 @Override
@@ -120,6 +157,7 @@ public class MessageActivity extends AppCompatActivity {
 
                 }
             });
+
         }
 
         @NonNull
@@ -132,8 +170,32 @@ public class MessageActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+            MessageViewHolder messageViewHolder= (MessageViewHolder) viewHolder;
 
-            ((MessageViewHolder)viewHolder).textView_message.setText(comments.get(i).message);
+            if (comments.get(i).uid.equals(uid)){  //내 uid일 경우
+                messageViewHolder.textView_message.setText(comments.get(i).message);
+                messageViewHolder.textView_message.setBackgroundResource(R.drawable.rightbubble); //말풍선을 설정, 오른쪽 말풍선
+                messageViewHolder.linearLayout_destination.setVisibility(View.INVISIBLE); //내가 보내는 경우이기 때문에 프로필을 감춘다.
+                messageViewHolder.linearLayout_main.setGravity(Gravity.RIGHT);
+            }else { //상대방이 보낸 메세지
+                Glide.with(viewHolder.itemView.getContext())
+                        .load(user.profileImageUrl)
+                        .apply(new RequestOptions().circleCrop())
+                        .into(messageViewHolder.image_profile);
+
+                messageViewHolder.textView_name.setText(user.userName);
+                messageViewHolder.linearLayout_destination.setVisibility(View.VISIBLE);
+                messageViewHolder.textView_message.setBackgroundResource(R.drawable.leftbubble);
+                messageViewHolder.textView_message.setText(comments.get(i).message);
+                messageViewHolder.textView_message.setTextSize(25);
+                messageViewHolder.linearLayout_main.setGravity(Gravity.LEFT);
+            }
+            long unixTime=(long)comments.get(i).time;
+            Date date=new Date(unixTime);
+
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+            String time=simpleDateFormat.format(date);
+            messageViewHolder.textView_time.setText(time);
         }
 
         @Override
@@ -143,10 +205,20 @@ public class MessageActivity extends AppCompatActivity {
 
         private class MessageViewHolder extends RecyclerView.ViewHolder {
             public TextView textView_message;
+            public TextView textView_name;
+            public TextView textView_time;
+            public ImageView image_profile;
+            public LinearLayout linearLayout_destination;
+            public LinearLayout linearLayout_main;
 
             public MessageViewHolder(View view) {
                 super(view);
-                textView_message=view.findViewById(R.id.item_message_text);
+                textView_message=(TextView) view.findViewById(R.id.item_message_text_message);
+                textView_name=(TextView) view.findViewById(R.id.item_message_text_name);
+                image_profile=(ImageView) view.findViewById(R.id.item_message_image_profile);
+                linearLayout_destination=(LinearLayout)view.findViewById(R.id.item_message_linear_destination);
+                linearLayout_main=(LinearLayout)view.findViewById(R.id.item_message_linear_main);
+                textView_time=(TextView)view.findViewById(R.id.item_message_text_time);
             }
         }
     }
