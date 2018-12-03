@@ -55,7 +55,7 @@ public class MessageActivity extends AppCompatActivity {
 
     int peopleCount=0;
 
-    private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy.MM.dd.HH:mm"); //날짜 포멧 설정
+    private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy.MM.dd HH:mm"); //날짜 포멧 설정
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,9 +155,6 @@ public class MessageActivity extends AppCompatActivity {
                     comments.clear();  //대화내용이 계속 쌓이기 때문에 초기화가 필요하다
 
                     Map<String,Object> readUserMap=new HashMap<>();
-
-
-
                     for(DataSnapshot item:dataSnapshot.getChildren()){
                         String key=item.getKey();
                         ChatModel.Comment comment_origin=item.getValue(ChatModel.Comment.class);
@@ -169,8 +166,11 @@ public class MessageActivity extends AppCompatActivity {
                         //comments.add(item.getValue(ChatModel.Comment.class));
                     }
 
+                    //comments 체크 입력 시작
+                    if(comments.size() == 0){return;}//끝
                     if(!comments.get(comments.size()-1).readUsers.containsKey(uid)){
-                        FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomuid).child("comments").updateChildren(readUserMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomuid).child("comments")
+                                .updateChildren(readUserMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) { //readUser해쉬가 전달 될 경우 돌아가도록 callBack 구성
 
@@ -210,6 +210,9 @@ public class MessageActivity extends AppCompatActivity {
                 messageViewHolder.textView_message.setBackgroundResource(R.drawable.rightbubble); //말풍선을 설정, 오른쪽 말풍선
                 messageViewHolder.linearLayout_destination.setVisibility(View.INVISIBLE); //내가 보내는 경우이기 때문에 프로필을 감춘다.
                 messageViewHolder.linearLayout_main.setGravity(Gravity.RIGHT);
+                messageViewHolder.linearLayout_message.setGravity(Gravity.RIGHT);
+                messageViewHolder.textView_counter_right.setVisibility(View.INVISIBLE);
+                messageViewHolder.textView_counter_left.setVisibility(View.VISIBLE);
                 setReadCounter(i,messageViewHolder.textView_counter_left);
 
             }else { //상대방이 보낸 메세지
@@ -222,8 +225,10 @@ public class MessageActivity extends AppCompatActivity {
                 messageViewHolder.linearLayout_destination.setVisibility(View.VISIBLE);
                 messageViewHolder.textView_message.setBackgroundResource(R.drawable.leftbubble);
                 messageViewHolder.textView_message.setText(comments.get(i).message);
-                messageViewHolder.textView_message.setTextSize(25);
                 messageViewHolder.linearLayout_main.setGravity(Gravity.LEFT);
+                messageViewHolder.linearLayout_message.setGravity(Gravity.LEFT);
+                messageViewHolder.textView_counter_right.setVisibility(View.VISIBLE);
+                messageViewHolder.textView_counter_left.setVisibility(View.INVISIBLE);
                 setReadCounter(i,messageViewHolder.textView_counter_right);
             }
             long unixTime=(long)comments.get(i).time;
@@ -282,6 +287,7 @@ public class MessageActivity extends AppCompatActivity {
             public ImageView image_profile;
             public LinearLayout linearLayout_destination;
             public LinearLayout linearLayout_main;
+            public LinearLayout linearLayout_message;
 
 
             public MessageViewHolder(View view) {
@@ -291,6 +297,7 @@ public class MessageActivity extends AppCompatActivity {
                 image_profile=(ImageView) view.findViewById(R.id.item_message_image_profile);
                 linearLayout_destination=(LinearLayout)view.findViewById(R.id.item_message_linear_destination);
                 linearLayout_main=(LinearLayout)view.findViewById(R.id.item_message_linear_main);
+                linearLayout_message=(LinearLayout)view.findViewById(R.id.item_message_linear_message);
                 textView_time=(TextView)view.findViewById(R.id.item_message_text_time);
                 textView_counter_right=(TextView)view.findViewById(R.id.item_message_count_right);
                 textView_counter_left=(TextView)view.findViewById(R.id.item_message_count_left);
