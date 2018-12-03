@@ -302,7 +302,9 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-        databaseReference.removeEventListener(valueEventListener); //뒤로가기 키 누르면 읽고있는 상태 해제
+        if(databaseReference!=null){
+            databaseReference.removeEventListener(valueEventListener); //뒤로가기 키 누르면 읽고있는 상태 해제
+        }
         finish();
         overridePendingTransition(R.anim.fromleft,R.anim.toright);
     }
