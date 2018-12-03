@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.bluetank.fire_chat_ex.fragment.AccountFragment;
 import com.bluetank.fire_chat_ex.fragment.ChatFragment;
 import com.bluetank.fire_chat_ex.fragment.PeopleFragment;
 
@@ -26,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     case R.id.action_chat:
                         getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,new ChatFragment()).commit();
+                        return true;
+                    case R.id.action_account:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,new AccountFragment()).commit();
                         return true;
                 }
 

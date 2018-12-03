@@ -90,6 +90,10 @@ public class PeopleFragment extends Fragment {
 
             ((CustomViewHolder) viewHolder).text.setText(userModels.get(i).userName);
 
+            if (userModels.get(i).comment!=null){
+                ((CustomViewHolder) viewHolder).comment.setText(userModels.get(i).comment);
+            }
+
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -109,12 +113,14 @@ public class PeopleFragment extends Fragment {
         private class CustomViewHolder extends RecyclerView.ViewHolder {
             public ImageView image;
             public TextView text;
+            public TextView comment;
 
             public CustomViewHolder(View view) {
                 super(view);
 
                 image=(ImageView) view.findViewById(R.id.item_friend_image);
                 text=(TextView) view.findViewById(R.id.item_friend_text);
+                comment=(TextView) view.findViewById(R.id.item_friend_comment);
             }
         }
     }

@@ -23,6 +23,21 @@
             android:text="아이디"
             android:layout_gravity="center"
             android:layout_margin="10dp"/>
+
+        <LinearLayout
+            android:gravity="center|right"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="상태 메세지"
+                android:layout_margin="10dp"
+                android:id="@+id/item_friend_comment"/>
+
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
