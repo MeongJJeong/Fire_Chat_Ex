@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         mFirebaseAuth=FirebaseAuth.getInstance();
-        mFirebaseAuth.signOut();
+        //mFirebaseAuth.signOut();
 
         String splash_background=mFirebaseRemoteConfig.getString(getString(R.string.rc_color));
         getWindow().setStatusBarColor(Color.parseColor(splash_background));

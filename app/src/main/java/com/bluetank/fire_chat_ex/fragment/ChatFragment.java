@@ -117,6 +117,7 @@ public class ChatFragment extends Fragment {
 
             Map<String,ChatModel.Comment> commentMap=new TreeMap<>(Collections.reverseOrder());  //메세지를 내림차순으로 정렬
             commentMap.putAll(chatModels.get(i).comments);
+
             String lastMessageKey=(String) commentMap.keySet().toArray()[0]; //0번째 메세지의 키값을 추출
             customViewHolder.textView_last.setText(chatModels.get(i).comments.get(lastMessageKey).message);
 
@@ -127,7 +128,7 @@ public class ChatFragment extends Fragment {
                     Intent intent=new Intent(view.getContext(),MessageActivity.class);
                     intent.putExtra("destinationUid",destinationUsers.get(i));
 
-                    ActivityOptions activityOptions=ActivityOptions.makeCustomAnimation(view.getContext(),R.anim.fromleft,R.anim.toright);
+                    ActivityOptions activityOptions=ActivityOptions.makeCustomAnimation(view.getContext(),R.anim.fromright,R.anim.toleft);
                     startActivity(intent,activityOptions.toBundle()); //애니메이션 추가
                 }
             });
