@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,7 +39,7 @@ public class AccountFragment extends Fragment {
 
     Button btnEdt,btnLogout;
     ImageView imageView;
-    TextView textView;
+    TextView text,name;
 
     FirebaseAuth firebaseAuth;
     FirebaseUser userAuth;
@@ -55,7 +54,8 @@ public class AccountFragment extends Fragment {
         btnEdt=(Button)view.findViewById(R.id.frag_account_btn1);
         btnLogout=(Button)view.findViewById(R.id.frag_account_logout);
         imageView=(ImageView)view.findViewById(R.id.frag_account_image);
-        textView=(TextView)view.findViewById(R.id.frag_account_text);
+        text =(TextView)view.findViewById(R.id.frag_account_text);
+        name=(TextView)view.findViewById(R.id.frag_account_name) ;
 
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance().getReference();
@@ -74,6 +74,7 @@ public class AccountFragment extends Fragment {
                         .load(userModel.profileImageUrl)
                         .apply(new RequestOptions().circleCrop())
                         .into(imageView);
+                name.setText(userModel.userName);
             }
 
             @Override
@@ -121,7 +122,7 @@ public class AccountFragment extends Fragment {
                 Map<String,Object> stringObjectMap=new HashMap<>();
                 String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
                 stringObjectMap.put("comment",editText.getText().toString());
-                textView.setText(editText.getText().toString());
+                text.setText(editText.getText().toString());
                 FirebaseDatabase.getInstance().getReference().child("user").child(uid).updateChildren(stringObjectMap);
 
             }

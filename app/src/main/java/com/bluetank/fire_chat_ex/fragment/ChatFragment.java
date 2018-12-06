@@ -37,7 +37,7 @@ import java.util.TreeMap;
 
 public class ChatFragment extends Fragment {
 
-    private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy.MM.dd hh:mm");
+    private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("MM.dd hh:mm");
 
     @Nullable
     @Override

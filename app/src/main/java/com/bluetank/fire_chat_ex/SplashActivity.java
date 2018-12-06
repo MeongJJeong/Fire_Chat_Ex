@@ -52,11 +52,11 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     void displayMessage() {
-        String splash_background=mFirebaseRemoteConfig.getString("splash_background");
+        //String splash_background=mFirebaseRemoteConfig.getString("splash_background");  //remote로 컬러를 받아오는 코드
         boolean caps=mFirebaseRemoteConfig.getBoolean("splash_message_caps");
         String splash_message=mFirebaseRemoteConfig.getString("splash_message");
 
-        linear.setBackgroundColor(Color.parseColor(splash_background));
+        //linear.setBackgroundColor(Color.parseColor(splash_background));
 
         if(caps){
             AlertDialog.Builder builder=new AlertDialog.Builder(this);

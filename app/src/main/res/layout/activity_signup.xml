@@ -14,7 +14,7 @@
         android:layout_height="100dp"
         android:id="@+id/signup_image_profile"
         android:layout_margin="50dp"
-        android:src="@drawable/loading_icon"/>
+        android:src="@drawable/add_image"/>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -24,7 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="e-mail"
-            android:id="@+id/signup_edt_email"/>
+            android:id="@+id/signup_edt_email"
+            android:textColor="@color/gray"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -36,7 +37,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="name"
-            android:id="@+id/signup_edt_name"/>
+            android:id="@+id/signup_edt_name"
+            android:textColor="@color/gray"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -49,7 +51,8 @@
             android:layout_height="wrap_content"
             android:hint="password"
             android:id="@+id/signup_edt_pw"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:textColor="@color/gray"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -57,6 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/signup_btn_signup"
-        android:text="회원가입"/>
+        android:text="회원가입"
+        android:textColor="@color/white"/>
 
 </LinearLayout>

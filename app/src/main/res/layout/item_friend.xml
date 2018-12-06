@@ -21,6 +21,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/item_friend_text"
             android:text="아이디"
+            android:textSize="20dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"/>
 
@@ -34,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:text="상태 메세지"
                 android:layout_margin="10dp"
+                android:textColor="@color/white"
                 android:id="@+id/item_friend_comment"/>
 
 

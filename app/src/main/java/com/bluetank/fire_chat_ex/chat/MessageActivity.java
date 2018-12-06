@@ -55,7 +55,8 @@ public class MessageActivity extends AppCompatActivity {
 
     int peopleCount=0;
 
-    private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy.MM.dd HH:mm"); //날짜 포멧 설정
+    //private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy.MM.dd HH:mm"); //날짜 포멧 설정
+    private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm"); //대문자 HH는 24시 표기법
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,7 +208,7 @@ public class MessageActivity extends AppCompatActivity {
 
             if (comments.get(i).uid.equals(uid)){  //내 uid일 경우
                 messageViewHolder.textView_message.setText(comments.get(i).message);
-                messageViewHolder.textView_message.setBackgroundResource(R.drawable.rightbubble); //말풍선을 설정, 오른쪽 말풍선
+                messageViewHolder.textView_message.setBackgroundResource(R.drawable.rbubble2); //말풍선을 설정, 오른쪽 말풍선
                 messageViewHolder.linearLayout_destination.setVisibility(View.INVISIBLE); //내가 보내는 경우이기 때문에 프로필을 감춘다.
                 messageViewHolder.linearLayout_main.setGravity(Gravity.RIGHT);
                 messageViewHolder.linearLayout_message.setGravity(Gravity.RIGHT);
@@ -223,7 +224,7 @@ public class MessageActivity extends AppCompatActivity {
 
                 messageViewHolder.textView_name.setText(user.userName);
                 messageViewHolder.linearLayout_destination.setVisibility(View.VISIBLE);
-                messageViewHolder.textView_message.setBackgroundResource(R.drawable.leftbubble);
+                messageViewHolder.textView_message.setBackgroundResource(R.drawable.lbubble2);
                 messageViewHolder.textView_message.setText(comments.get(i).message);
                 messageViewHolder.linearLayout_main.setGravity(Gravity.LEFT);
                 messageViewHolder.linearLayout_message.setGravity(Gravity.LEFT);

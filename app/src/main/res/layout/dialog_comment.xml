@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:hint="상태 메세지를 입력하세요"
+        android:textColor="@color/gray"
         android:id="@+id/dialog_edt_comment"/>
 
 </LinearLayout>
