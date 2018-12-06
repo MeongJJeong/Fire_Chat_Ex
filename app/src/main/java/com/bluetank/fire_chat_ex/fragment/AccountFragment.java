@@ -69,12 +69,16 @@ public class AccountFragment extends Fragment {
         FirebaseDatabase.getInstance().getReference().child("user").child(userAuth.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(getActivity()==null){
+                    return;
+                }
                 UserModel userModel=dataSnapshot.getValue(UserModel.class);
                 Glide.with(AccountFragment.this)
                         .load(userModel.profileImageUrl)
                         .apply(new RequestOptions().circleCrop())
                         .into(imageView);
                 name.setText(userModel.userName);
+                text.setText(userModel.comment);
             }
 
             @Override
