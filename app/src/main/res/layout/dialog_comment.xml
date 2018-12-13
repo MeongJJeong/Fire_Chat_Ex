@@ -11,12 +11,34 @@
         android:background="#ffffbb44"
         android:src="@drawable/infinity_icon" />
 
-    <EditText
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:hint="상태 메세지를 입력하세요"
-        android:textColor="@color/gray"
-        android:id="@+id/dialog_edt_comment"/>
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:hint="상태 메세지를 입력하세요"
+            android:textColor="@color/gray"
+            android:id="@+id/dialog_edt_comment"
+            android:visibility="visible"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textSize="20dp"
+            android:id="@+id/dialog_text_logout"
+            android:text="로그아웃 하시겠습니까??"
+            android:visibility="visible"
+            />
+
+
+    </FrameLayout>
+
+
 
 </LinearLayout>

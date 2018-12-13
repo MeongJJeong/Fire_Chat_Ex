@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bluetank.fire_chat_ex.R;
 import com.bluetank.fire_chat_ex.model.ChatModel;
@@ -52,6 +52,9 @@ public class MessageActivity extends AppCompatActivity {
 
     private String uid;
     private String chatRoomuid;
+    private String name;
+
+    private Toolbar toolbar;
 
     int peopleCount=0;
 
@@ -65,38 +68,67 @@ public class MessageActivity extends AppCompatActivity {
 
         uid=FirebaseAuth.getInstance().getCurrentUser().getUid();  //채팅을 요구하는 uid
         destinationUid=getIntent().getStringExtra("destinationUid"); //채팅을 당하는 id
+
+        FirebaseDatabase.getInstance().getReference().child("user").child(destinationUid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserModel userModel=dataSnapshot.getValue(UserModel.class);
+                setTitle(userModel.userName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         btn=(Button)findViewById(R.id.message_btn);
         edt=(EditText)findViewById(R.id.message_edt);
         recyclerView=(RecyclerView)findViewById(R.id.message_recycle);
 
+        toolbar=(Toolbar)findViewById(R.id.message_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.arrow_up);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ChatModel chatModel=new ChatModel();
-                chatModel.users.put(uid,true);
-                chatModel.users.put(destinationUid,true);
-
-                if (chatRoomuid==null){
-                    btn.setEnabled(false); //버튼을 잠시 비활성화
-                    //database에 push를 통해 새로운 트리가 생성
-                    FirebaseDatabase.getInstance().getReference().child("chatrooms").push().setValue(chatModel).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            checkChatRoom(); //콜백 메서드로 중복되는 채팅방 생성 방지
-                        }
-                    });
+                if(edt.getText().toString().getBytes().length<=0){ //입력된 것이 없을경우 리턴
+                    return;
                 }else {
+                    ChatModel chatModel=new ChatModel();
+                    chatModel.users.put(uid,true);
+                    chatModel.users.put(destinationUid,true);
 
-                    ChatModel.Comment comment=new ChatModel.Comment();
-                    comment.uid=uid;
-                    comment.message=edt.getText().toString();
-                    comment.time=ServerValue.TIMESTAMP; //Firebase에서 지원하는 method
-                    FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomuid).child("comments").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            edt.setText(null);  //입력부 초기화
-                        }
-                    });
+                    if (chatRoomuid==null){
+                        btn.setEnabled(false); //버튼을 잠시 비활성화
+                        //database에 push를 통해 새로운 트리가 생성
+                        FirebaseDatabase.getInstance().getReference().child("chatrooms").push().setValue(chatModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                checkChatRoom(); //콜백 메서드로 중복되는 채팅방 생성 방지
+                            }
+                        });
+                    }else {
+
+                        ChatModel.Comment comment=new ChatModel.Comment();
+                        comment.uid=uid;
+                        comment.message=edt.getText().toString();
+                        comment.time=ServerValue.TIMESTAMP; //Firebase에서 지원하는 method
+                        FirebaseDatabase.getInstance().getReference().child("chatrooms").child(chatRoomuid).child("comments").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                edt.setText(null);  //입력부 초기화
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -183,7 +215,6 @@ public class MessageActivity extends AppCompatActivity {
                         notifyDataSetChanged(); //데이터 갱신
                         recyclerView.scrollToPosition(comments.size()-1); //대화목록을 최신판으로 갱신, comment-1이 가장 최근 보낸 메세지
                     }
-
                 }
 
                 @Override
@@ -191,7 +222,6 @@ public class MessageActivity extends AppCompatActivity {
 
                 }
             });
-
         }
 
         @NonNull
@@ -208,7 +238,7 @@ public class MessageActivity extends AppCompatActivity {
 
             if (comments.get(i).uid.equals(uid)){  //내 uid일 경우
                 messageViewHolder.textView_message.setText(comments.get(i).message);
-                messageViewHolder.textView_message.setBackgroundResource(R.drawable.rbubble2); //말풍선을 설정, 오른쪽 말풍선
+                messageViewHolder.textView_message.setBackgroundResource(R.drawable.rbubble3); //말풍선을 설정, 오른쪽 말풍선
                 messageViewHolder.linearLayout_destination.setVisibility(View.INVISIBLE); //내가 보내는 경우이기 때문에 프로필을 감춘다.
                 messageViewHolder.linearLayout_main.setGravity(Gravity.RIGHT);
                 messageViewHolder.linearLayout_message.setGravity(Gravity.RIGHT);
@@ -224,7 +254,7 @@ public class MessageActivity extends AppCompatActivity {
 
                 messageViewHolder.textView_name.setText(user.userName);
                 messageViewHolder.linearLayout_destination.setVisibility(View.VISIBLE);
-                messageViewHolder.textView_message.setBackgroundResource(R.drawable.lbubble2);
+                messageViewHolder.textView_message.setBackgroundResource(R.drawable.lbubble3);
                 messageViewHolder.textView_message.setText(comments.get(i).message);
                 messageViewHolder.linearLayout_main.setGravity(Gravity.LEFT);
                 messageViewHolder.linearLayout_message.setGravity(Gravity.LEFT);
@@ -314,6 +344,6 @@ public class MessageActivity extends AppCompatActivity {
             databaseReference.removeEventListener(valueEventListener); //뒤로가기 키 누르면 읽고있는 상태 해제
         }
         finish();
-        overridePendingTransition(R.anim.fromleft,R.anim.toright);
+        overridePendingTransition(R.anim.fromtop,R.anim.tobottom);
     }
 }

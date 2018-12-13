@@ -99,7 +99,7 @@ public class PeopleFragment extends Fragment {
                 public void onClick(View view) {
                     Intent intent=new Intent(view.getContext(),MessageActivity.class);
                     intent.putExtra("destinationUid", userModels.get(i).uid);
-                    ActivityOptions activityOptions=ActivityOptions.makeCustomAnimation(view.getContext(),R.anim.fromright,R.anim.toleft);
+                    ActivityOptions activityOptions=ActivityOptions.makeCustomAnimation(view.getContext(),R.anim.frombottom,R.anim.totop);
                     startActivity(intent,activityOptions.toBundle());
                 }
             });

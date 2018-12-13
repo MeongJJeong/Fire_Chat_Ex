@@ -21,6 +21,7 @@ import com.bluetank.fire_chat_ex.model.UserModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -128,7 +129,7 @@ public class ChatFragment extends Fragment {
                     Intent intent=new Intent(view.getContext(),MessageActivity.class);
                     intent.putExtra("destinationUid",destinationUsers.get(i));
 
-                    ActivityOptions activityOptions=ActivityOptions.makeCustomAnimation(view.getContext(),R.anim.fromright,R.anim.toleft);
+                    ActivityOptions activityOptions=ActivityOptions.makeCustomAnimation(view.getContext(),R.anim.frombottom,R.anim.totop);
                     startActivity(intent,activityOptions.toBundle()); //애니메이션 추가
                 }
             });

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.AnimatedImageDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +12,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,7 +38,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AccountFragment extends Fragment {
+public class AccountFragment extends Fragment implements View.OnClickListener {
 
     Button btnEdt,btnLogout;
     ImageView imageView;
@@ -44,8 +47,8 @@ public class AccountFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     FirebaseUser userAuth;
     DatabaseReference firebaseDatabase;
-    DataSnapshot dataSnapshot;
-
+    Animation animation;
+    
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,14 +60,12 @@ public class AccountFragment extends Fragment {
         text =(TextView)view.findViewById(R.id.frag_account_text);
         name=(TextView)view.findViewById(R.id.frag_account_name) ;
 
+        animation=AnimationUtils.loadAnimation(getContext(),R.anim.swing);
+        animation.setRepeatCount(2);
+
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance().getReference();
         userAuth=FirebaseAuth.getInstance().getCurrentUser();
-
-
-//        final UserModel userModel=new UserModel();
-        final String profile=FirebaseStorage.getInstance().getReference().child("userImages").child(userAuth.getUid()).toString();
-        final StorageReference profileImageRef=FirebaseStorage.getInstance().getReference().child("userImages").child(userAuth.getUid());
 
         FirebaseDatabase.getInstance().getReference().child("user").child(userAuth.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -86,57 +87,84 @@ public class AccountFragment extends Fragment {
 
             }
         });
-        //
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(),"안녕",Toast.LENGTH_SHORT).show();
-            }
-        });
 
-
-        btnEdt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialog(view.getContext());
-            }
-        });
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                firebaseAuth.signOut();
-                Intent intent=new Intent(view.getContext(),LoginActivity.class);
-                getActivity().finish();
-                startActivity(intent);
-            }
-        });
+        imageView.setOnClickListener(this);
+        btnEdt.setOnClickListener(this);
+        btnLogout.setOnClickListener(this);
 
         return view;
     }
 
-    void showDialog(Context context){
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+    @Override
+    public void onClick(View v) {
+        AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
         LayoutInflater layoutInflater=getActivity().getLayoutInflater();
         View view=layoutInflater.inflate(R.layout.dialog_comment,null);
+        final TextView textView=(TextView)view.findViewById(R.id.dialog_text_logout);
         final EditText editText=(EditText)view.findViewById(R.id.dialog_edt_comment); //다이얼로그에 edt
-        builder.setView(view).setPositiveButton("확인", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
 
-                Map<String,Object> stringObjectMap=new HashMap<>();
-                String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-                stringObjectMap.put("comment",editText.getText().toString());
-                text.setText(editText.getText().toString());
-                FirebaseDatabase.getInstance().getReference().child("user").child(uid).updateChildren(stringObjectMap);
+        if (v==imageView){
+            //프로필 사진 바꾸는 코드 추가 예정
+            Toast.makeText(getContext(),"안녕",Toast.LENGTH_SHORT).show();
+        }
+        if (v==btnEdt){
 
-            }
-        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            editText.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.INVISIBLE);
 
-            }
-        });
+            FirebaseDatabase.getInstance().getReference().child("user").child(userAuth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    UserModel userModel=dataSnapshot.getValue(UserModel.class);
+                    editText.setText(userModel.comment);
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
 
-        builder.show();
+            builder.setView(view).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    Map<String,Object> stringObjectMap=new HashMap<>();
+                    String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    stringObjectMap.put("comment",editText.getText().toString());
+                    text.setText(editText.getText().toString());
+                    FirebaseDatabase.getInstance().getReference().child("user").child(uid).updateChildren(stringObjectMap);
+
+                }
+            }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+            builder.show();
+        }
+        if (v==btnLogout){
+
+            editText.setVisibility(View.INVISIBLE);
+            textView.setVisibility(View.VISIBLE);
+
+            builder.setView(view).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    firebaseAuth.signOut();
+                    Intent intent=new Intent(getContext(),LoginActivity.class);
+                    getActivity().finish();
+                    startActivity(intent);
+
+
+                }
+            }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+            builder.show();
+        }
     }
 }

@@ -22,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button login, signup;
     private EditText id,pw;
 
-    FirebaseRemoteConfig mFirebaseRemoteConfig;
+//    FirebaseRemoteConfig mFirebaseRemoteConfig;
     FirebaseAuth mFirebaseAuth;
     FirebaseAuth.AuthStateListener authStateListener;
 
@@ -31,17 +31,17 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+//        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         mFirebaseAuth=FirebaseAuth.getInstance();
-        //mFirebaseAuth.signOut();
+        //mFirebaseAuth.signOut();  초기화를 위한 로그아웃 부분이나 생략, 대신 account에 버튼생성
 
-        String splash_background=mFirebaseRemoteConfig.getString(getString(R.string.rc_color));
-        getWindow().setStatusBarColor(Color.parseColor(splash_background));
+//        String splash_background=mFirebaseRemoteConfig.getString(getString(R.string.rc_color));
+//        getWindow().setStatusBarColor(Color.parseColor(splash_background));
 
         login=(Button)findViewById(R.id.login_btn_login);
         signup =(Button)findViewById(R.id.login_btn_signup);
-        login.setBackgroundColor(Color.parseColor(splash_background));
-        signup.setBackgroundColor(Color.parseColor(splash_background));
+//        login.setBackgroundColor(Color.parseColor(splash_background));
+//        signup.setBackgroundColor(Color.parseColor(splash_background));
         id=(EditText)findViewById(R.id.login_edt_id);
         pw=(EditText)findViewById(R.id.login_edt_pw);
 

@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
+        android:gravity="center_horizontal|center_vertical"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -46,20 +46,24 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal|center_vertical"
         android:padding="10dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:orientation="vertical">
 
         <Button
-            android:layout_width="150dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="상태 메세지 수정"
-            android:id="@+id/frag_account_btn1"/>
+            android:textColor="@color/gray"
+            android:id="@+id/frag_account_btn1"
+            android:background="@drawable/item_btn_yellow"/>
 
         <Button
-            android:layout_width="150dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="로그아웃"
-            android:id="@+id/frag_account_logout"/>
+            android:id="@+id/frag_account_logout"
+            android:textColor="@color/gray"
+            android:background="@drawable/item_btn_yellow"/>
 
     </LinearLayout>
 </LinearLayout>
