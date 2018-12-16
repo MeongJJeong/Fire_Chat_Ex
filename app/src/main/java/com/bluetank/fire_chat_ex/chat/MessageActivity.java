@@ -52,8 +52,6 @@ public class MessageActivity extends AppCompatActivity {
 
     private String uid;
     private String chatRoomuid;
-    private String name;
-
     private Toolbar toolbar;
 
     int peopleCount=0;
