@@ -14,17 +14,13 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:id="@+id/main_toolbar">
-
-
     </android.support.v7.widget.Toolbar>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/main_frame"
-        android:layout_weight="1"
-        >
-
+        android:layout_weight="1">
     </FrameLayout>
 
     <android.support.design.widget.BottomNavigationView
@@ -35,7 +31,6 @@
         app:itemTextColor="@color/white"
         app:itemIconTint="@color/white"
         app:menu="@menu/menu_main">
-
     </android.support.design.widget.BottomNavigationView>
 
 </LinearLayout>

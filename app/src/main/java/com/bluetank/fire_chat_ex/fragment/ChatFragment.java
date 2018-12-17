@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bluetank.fire_chat_ex.R;
+import com.bluetank.fire_chat_ex.chat.GroupMessageActivity;
 import com.bluetank.fire_chat_ex.chat.MessageActivity;
 import com.bluetank.fire_chat_ex.model.ChatModel;
 import com.bluetank.fire_chat_ex.model.UserModel;
@@ -55,6 +56,7 @@ public class ChatFragment extends Fragment {
     class ChatRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
         private List<ChatModel> chatModels=new ArrayList<>();
+        private List<String> keys=new ArrayList<>();
         private String uid;
         private ArrayList<String> destinationUsers=new ArrayList<>(); //대화 할 사람들의 데이터 담김
         public ChatRecyclerViewAdapter() {
@@ -66,6 +68,7 @@ public class ChatFragment extends Fragment {
                     chatModels.clear();
                     for (DataSnapshot item:dataSnapshot.getChildren()){
                         chatModels.add(item.getValue(ChatModel.class));
+                        keys.add(item.getKey()); //방에대한 키를 받아옴
                     }
                     notifyDataSetChanged();
                 }
@@ -93,6 +96,10 @@ public class ChatFragment extends Fragment {
             String destinationUid=null;
 
             for(String user:chatModels.get(i).users.keySet()){  //챗방에 유저들 채크
+//                if (chatModels.get(i).users.size()>2){
+//
+//
+//                }else
                 if(!user.equals(uid)){
                     //내가 아닌 사람들 추출
                     destinationUid=user;
@@ -119,26 +126,32 @@ public class ChatFragment extends Fragment {
             Map<String,ChatModel.Comment> commentMap=new TreeMap<>(Collections.reverseOrder());  //메세지를 내림차순으로 정렬
             commentMap.putAll(chatModels.get(i).comments);
 
-            String lastMessageKey=(String) commentMap.keySet().toArray()[0]; //0번째 메세지의 키값을 추출
-            customViewHolder.textView_last.setText(chatModels.get(i).comments.get(lastMessageKey).message);
+            if (commentMap.keySet().toArray().length>0) {
+                String lastMessageKey = (String) commentMap.keySet().toArray()[0]; //0번째 메세지의 키값을 추출
+                customViewHolder.textView_last.setText(chatModels.get(i).comments.get(lastMessageKey).message);
+
+                //TimeStamp
+                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+                long unixTime = (long) chatModels.get(i).comments.get(lastMessageKey).time;
+                Date date = new Date(unixTime);
+                customViewHolder.textView_time.setText(simpleDateFormat.format(date));
+            }
 
             customViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                    Intent intent=new Intent(view.getContext(),MessageActivity.class);
-                    intent.putExtra("destinationUid",destinationUsers.get(i));
-
-                    ActivityOptions activityOptions=ActivityOptions.makeCustomAnimation(view.getContext(),R.anim.frombottom,R.anim.totop);
-                    startActivity(intent,activityOptions.toBundle()); //애니메이션 추가
+                    Intent intent=null;
+                    if (chatModels.get(i).users.size()>2){
+                        intent=new Intent(view.getContext(),GroupMessageActivity.class);
+                        intent.putExtra("destinationRoom",keys.get(i));
+                    }else {
+                        intent = new Intent(view.getContext(), MessageActivity.class);
+                        intent.putExtra("destinationUid", destinationUsers.get(i));
+                    }
+                    ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(view.getContext(), R.anim.frombottom, R.anim.totop);
+                    startActivity(intent, activityOptions.toBundle()); //애니메이션 추가
                 }
             });
-
-            //TimeStamp
-            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-            long unixTime= (long) chatModels.get(i).comments.get(lastMessageKey).time;
-            Date date=new Date(unixTime);
-            customViewHolder.textView_time.setText(simpleDateFormat.format(date));
         }
 
         @Override

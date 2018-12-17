@@ -8,6 +8,9 @@ public class ChatModel {
     public Map<String,Boolean> users=new HashMap<>(); //채팅방의 유저들  //uid와 destinationUid를 모두 포함하는 방식
     public Map<String,Comment> comments=new HashMap<>(); //채팅방의 내용
 
+    public String roomName;
+    public String profileImageUrl;
+
     public static class Comment{
         public String uid;
         public String message;
