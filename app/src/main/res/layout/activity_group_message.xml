@@ -1,34 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary"
     tools:context=".chat.GroupMessageActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:id="@+id/groupmessage_toolbar"
+        app:titleTextColor="@color/white">
+    </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/groupmessage_recycle"
+        android:layout_weight="1">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/groupmessage_edt"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentLeft="true"
-        android:id="@+id/groupmessage_recycle"></android.support.v7.widget.RecyclerView>
-    
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/groupmessage_edt"
+        android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@id/groupmessage_sendbtn"
-        android:layout_alignParentLeft="true"/>
+        android:id="@+id/linear_bottom"
+        android:background="@color/white">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/groupmessage_sendbtn"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"/>
+        <EditText
+            android:padding="5dp"
+            android:id="@+id/groupmessage_edt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="19dp"
+            android:background="@null"
+            android:maxLines="4"
+            android:isScrollContainer="true"
+            android:focusable="true"
+            android:layout_weight="1"/>
 
-</RelativeLayout>
+
+        <Button
+            android:id="@+id/groupmessage_sendbtn"
+            android:layout_width="65dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="전송"
+            android:textColor="@color/gray"
+            android:background="@drawable/item_btn_yellow" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

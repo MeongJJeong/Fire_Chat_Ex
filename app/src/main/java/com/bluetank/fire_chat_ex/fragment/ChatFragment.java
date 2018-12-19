@@ -96,32 +96,54 @@ public class ChatFragment extends Fragment {
             String destinationUid=null;
 
             for(String user:chatModels.get(i).users.keySet()){  //챗방에 유저들 채크
-//                if (chatModels.get(i).users.size()>2){
-//
-//
-//                }else
-                if(!user.equals(uid)){
+
+                if (chatModels.get(i).users.size()>2){
+                    destinationUsers.add(null);
+                }else if(!user.equals(uid)){
                     //내가 아닌 사람들 추출
                     destinationUid=user;
-                    destinationUsers.add(destinationUid);
+                    destinationUsers.add(i,destinationUid);
                 }
             }
-            FirebaseDatabase.getInstance().getReference().child("user").child(destinationUid).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    UserModel userModel=dataSnapshot.getValue(UserModel.class);
-                    Glide.with(customViewHolder.itemView.getContext())
-                            .load(userModel.profileImageUrl)
-                            .apply(new RequestOptions().circleCrop())
-                            .into(customViewHolder.imageView);
-                    customViewHolder.textView_title.setText(userModel.userName);
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
- 
-                }
-            });
+            if (chatModels.get(i).users.size()>2){ //단톡방일 경우
+                FirebaseDatabase.getInstance().getReference().child("chatrooms").child(keys.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        ChatModel chatModel=dataSnapshot.getValue(ChatModel.class);
+                        Glide.with(customViewHolder.itemView.getContext())
+                                .load(chatModel.profileImageUrl)
+                                .apply(new RequestOptions().circleCrop())
+                                .into(customViewHolder.imageView);
+                        customViewHolder.textView_title.setText(chatModel.roomName);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }else {     //그외 채팅방
+                FirebaseDatabase.getInstance().getReference().child("user").child(destinationUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        UserModel userModel=dataSnapshot.getValue(UserModel.class);
+                        Glide.with(customViewHolder.itemView.getContext())
+                                .load(userModel.profileImageUrl)
+                                .apply(new RequestOptions().circleCrop())
+                                .into(customViewHolder.imageView);
+                        customViewHolder.textView_title.setText(userModel.userName);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
 
             Map<String,ChatModel.Comment> commentMap=new TreeMap<>(Collections.reverseOrder());  //메세지를 내림차순으로 정렬
             commentMap.putAll(chatModels.get(i).comments);
@@ -145,8 +167,10 @@ public class ChatFragment extends Fragment {
                         intent=new Intent(view.getContext(),GroupMessageActivity.class);
                         intent.putExtra("destinationRoom",keys.get(i));
                     }else {
-                        intent = new Intent(view.getContext(), MessageActivity.class);
-                        intent.putExtra("destinationUid", destinationUsers.get(i));
+                        if (destinationUsers.get(i)!=null){
+                            intent = new Intent(view.getContext(), MessageActivity.class);
+                            intent.putExtra("destinationUid", destinationUsers.get(i));
+                        }
                     }
                     ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(view.getContext(), R.anim.frombottom, R.anim.totop);
                     startActivity(intent, activityOptions.toBundle()); //애니메이션 추가

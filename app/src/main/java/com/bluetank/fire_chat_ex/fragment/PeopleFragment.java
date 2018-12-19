@@ -30,7 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeopleFragment extends Fragment {
+public class PeopleFragment extends Fragment{
 
     @Nullable
     @Override
@@ -41,7 +41,7 @@ public class PeopleFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(inflater.getContext()));
         recyclerView.setAdapter(new PeopleFragmentRecyclerViewAdapter());
 
-        FloatingActionButton floatingActionButton=(FloatingActionButton)view.findViewById(R.id.frag_people_floatbtn);
+        FloatingActionButton floatingActionButton=(FloatingActionButton)view.findViewById(R.id.frag_people_floatbtn); //단톡방 생성을 위한 floating button
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

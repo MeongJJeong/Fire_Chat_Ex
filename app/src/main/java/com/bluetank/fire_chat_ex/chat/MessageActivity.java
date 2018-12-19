@@ -336,7 +336,6 @@ public class MessageActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
         if(databaseReference!=null){                                     //메세지가 없을경우의 nullpointexception 해결
             databaseReference.removeEventListener(valueEventListener); //뒤로가기 키 누르면 읽고있는 상태 해제
         }

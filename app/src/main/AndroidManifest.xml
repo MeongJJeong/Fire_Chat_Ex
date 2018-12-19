@@ -13,24 +13,26 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".SplashActivity"
-            android:theme="@style/AppThemeNoActionBar">
+            android:theme="@style/AppThemeChatRoom">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        />
-        <activity
-            android:name=".LoginActivity"
-            android:theme="@style/AppThemeNoActionBar" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".fragment.SelectFriendActivity" />
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AppThemeChatRoom" />
         <activity
             android:name=".chat.MessageActivity"
-            android:theme="@style/AppThemeNoActionBar" />
-        <activity android:name=".fragment.SelectFriendActivity" />
-        <activity android:name=".chat.GroupMessageActivity"></activity>
+            android:theme="@style/AppThemeChatRoom" />
+        <activity
+            android:name=".chat.GroupMessageActivity"
+            android:theme="@style/AppThemeChatRoom"
+            />
     </application>
 
 </manifest>

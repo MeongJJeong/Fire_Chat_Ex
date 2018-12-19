@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +50,7 @@ public class GroupMessageActivity extends AppCompatActivity {
     private  ValueEventListener valueEventListener;
 
     private RecyclerView recyclerView;
+    private Toolbar toolbar;
     private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("HH:mm"); //대문자 HH는 24시 표기법
 
    List<ChatModel.Comment> comments=new ArrayList<>();
@@ -63,6 +65,30 @@ public class GroupMessageActivity extends AppCompatActivity {
         destinationRoom=getIntent().getStringExtra("destinationRoom");
         uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
         editText=(EditText)findViewById(R.id.groupmessage_edt);
+
+        toolbar=(Toolbar)findViewById(R.id.groupmessage_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.arrow_up);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        FirebaseDatabase.getInstance().getReference().child("chatrooms").child(destinationRoom).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ChatModel chatModel=dataSnapshot.getValue(ChatModel.class);
+                setTitle(chatModel.roomName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         FirebaseDatabase.getInstance().getReference().child("user").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -259,5 +285,14 @@ public class GroupMessageActivity extends AppCompatActivity {
                 textView_counter_left=(TextView)itemView.findViewById(R.id.item_message_count_left);
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(databaseReference!=null){                                     //메세지가 없을경우의 nullpointexception 해결
+            databaseReference.removeEventListener(valueEventListener); //뒤로가기 키 누르면 읽고있는 상태 해제
+        }
+        finish();
+        overridePendingTransition(R.anim.fromtop,R.anim.tobottom);
     }
 }

@@ -42,15 +42,11 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-//        FirebaseRemoteConfig mFirebaseRemoteConfig=FirebaseRemoteConfig.getInstance();
-//        String splash_background=mFirebaseRemoteConfig.getString(getString(R.string.rc_color));
-//        getWindow().setStatusBarColor(Color.parseColor(splash_background));
-
         name=(EditText)findViewById(R.id.signup_edt_name);
         email=(EditText)findViewById(R.id.signup_edt_email);
         pw=(EditText)findViewById(R.id.signup_edt_pw);
         signup=(Button)findViewById(R.id.signup_btn_signup);
-//        signup.setBackgroundColor(Color.parseColor(splash_background));
+
 
         profile=(ImageView)findViewById(R.id.signup_image_profile);
         profile.setOnClickListener(new View.OnClickListener() {
@@ -73,6 +69,10 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"사진을 지정해주세요.",Toast.LENGTH_SHORT).show();
                     return;
                 }else {
+                    signup.setEnabled(false); //작업이 처리될때까지 버튼을 비활성화
+
+                    Toast.makeText(getApplicationContext(),"진행중입니다.. 잠시만 기다려주세요",Toast.LENGTH_SHORT).show();
+
                     str1=email.getText().toString();
                     str2=pw.getText().toString();
                     str3=name.getText().toString();
@@ -108,9 +108,10 @@ public class SignupActivity extends AppCompatActivity {
                                             });
                                         }
                                     });
+                                    Toast.makeText(getApplicationContext(),"회원가입이 완료되었습니다!",Toast.LENGTH_SHORT).show();
                                 }
                             });
-
+                    signup.setEnabled(true);
                 }
             }
         });

@@ -8,6 +8,14 @@
     android:orientation="vertical"
     tools:context=".fragment.SelectFriendActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:id="@+id/selectFriend_toolbar">
+
+    </android.support.v7.widget.Toolbar>
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,8 +24,9 @@
     </android.support.v7.widget.RecyclerView>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="채팅방 만들기"
-        android:id="@+id/selectFriend_btn"/>
+        android:id="@+id/selectFriend_btn"
+        android:background="@drawable/item_btn_yellow"/>
 </LinearLayout>
