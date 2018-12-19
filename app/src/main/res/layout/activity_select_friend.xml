@@ -6,30 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".fragment.SelectFriendActivity">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:id="@+id/main_toolbar">
+        android:id="@+id/selectFriend_toolbar">
+
     </android.support.v7.widget.Toolbar>
 
-    <FrameLayout
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/main_frame"
-        android:layout_weight="1">
-    </FrameLayout>
+        android:layout_weight="1"
+        android:id="@+id/selectFriend_recyclerview">
+    </android.support.v7.widget.RecyclerView>
 
-    <android.support.design.widget.BottomNavigationView
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/main_bottomNavi"
-        app:itemBackground="@color/colorPrimary"
-        app:itemTextColor="@color/white"
-        app:itemIconTint="@color/white"
-        app:menu="@menu/menu_main">
-    </android.support.design.widget.BottomNavigationView>
-
+        android:text="채팅방 만들기"
+        android:id="@+id/selectFriend_btn"
+        android:background="@drawable/item_btn_yellow"/>
 </LinearLayout>

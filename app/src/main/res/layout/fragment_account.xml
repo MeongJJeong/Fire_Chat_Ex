@@ -36,9 +36,6 @@
             android:textSize="25dp"
             android:id="@+id/frag_account_text" />
 
-
-
-
     </LinearLayout>
 
     <LinearLayout

@@ -1,10 +1,8 @@
 package com.bluetank.fire_chat_ex;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,7 +15,7 @@ import com.bluetank.fire_chat_ex.fragment.PeopleFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    Toolbar toolbar;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +24,6 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar=(Toolbar)findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
-
-
         setTitle("친구");
         BottomNavigationView bottomNavigationView=(BottomNavigationView) findViewById(R.id.main_bottomNavi);
 

@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bluetank.fire_chat_ex.R;
+import com.bluetank.fire_chat_ex.chat.GroupMessageActivity;
 import com.bluetank.fire_chat_ex.chat.MessageActivity;
 import com.bluetank.fire_chat_ex.model.ChatModel;
 import com.bluetank.fire_chat_ex.model.UserModel;
@@ -38,15 +39,15 @@ import java.util.TreeMap;
 
 public class ChatFragment extends Fragment {
 
-    private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("MM.dd hh:mm");
+    private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("MM.dd hh:mm"); //날짜 포멧
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_chat,container,false);
 
-        RecyclerView recyclerView=(RecyclerView)view.findViewById(R.id.frag_chat_recycler);
-        recyclerView.setAdapter(new ChatRecyclerViewAdapter());
+        RecyclerView recyclerView=(RecyclerView)view.findViewById(R.id.frag_chat_recycler);  //채팅방 목록을 표현할 recyclerview
+        recyclerView.setAdapter(new ChatRecyclerViewAdapter());                                 //recyclerview의 viewadapter 설정
         recyclerView.setLayoutManager(new LinearLayoutManager(inflater.getContext()));
 
         return view;
@@ -54,7 +55,8 @@ public class ChatFragment extends Fragment {
 
     class ChatRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-        private List<ChatModel> chatModels=new ArrayList<>();
+        private List<ChatModel> chatModels=new ArrayList<>();          //chatmodel 형식의 채팅방 정보 저장
+        private List<String> keys=new ArrayList<>();                    //방에 대한 키 저장
         private String uid;
         private ArrayList<String> destinationUsers=new ArrayList<>(); //대화 할 사람들의 데이터 담김
         public ChatRecyclerViewAdapter() {
@@ -66,8 +68,9 @@ public class ChatFragment extends Fragment {
                     chatModels.clear();
                     for (DataSnapshot item:dataSnapshot.getChildren()){
                         chatModels.add(item.getValue(ChatModel.class));
+                        keys.add(item.getKey()); //방에대한 키를 받아옴
                     }
-                    notifyDataSetChanged();
+                    notifyDataSetChanged(); //새로고침
                 }
 
                 @Override
@@ -82,7 +85,6 @@ public class ChatFragment extends Fragment {
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             View view=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_chat,viewGroup,false);
             
-            
             return new CustomViewHolder(view);
         }
 
@@ -93,52 +95,86 @@ public class ChatFragment extends Fragment {
             String destinationUid=null;
 
             for(String user:chatModels.get(i).users.keySet()){  //챗방에 유저들 채크
-                if(!user.equals(uid)){
+
+                if (chatModels.get(i).users.size()>2){
+                    destinationUsers.add(null);
+                }else if(!user.equals(uid)){
                     //내가 아닌 사람들 추출
                     destinationUid=user;
-                    destinationUsers.add(destinationUid);
+                    destinationUsers.add(i,destinationUid);
                 }
             }
-            FirebaseDatabase.getInstance().getReference().child("user").child(destinationUid).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    UserModel userModel=dataSnapshot.getValue(UserModel.class);
-                    Glide.with(customViewHolder.itemView.getContext())
-                            .load(userModel.profileImageUrl)
-                            .apply(new RequestOptions().circleCrop())
-                            .into(customViewHolder.imageView);
-                    customViewHolder.textView_title.setText(userModel.userName);
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
- 
-                }
-            });
+            if (chatModels.get(i).users.size()>2){ //단톡방일 경우
+                FirebaseDatabase.getInstance().getReference().child("chatrooms").child(keys.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        ChatModel chatModel=dataSnapshot.getValue(ChatModel.class);
+                        Glide.with(customViewHolder.itemView.getContext())
+                                .load(chatModel.profileImageUrl)
+                                .apply(new RequestOptions().circleCrop())
+                                .into(customViewHolder.imageView);
+                        customViewHolder.textView_title.setText(chatModel.roomName);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }else {     //그외 채팅방
+                FirebaseDatabase.getInstance().getReference().child("user").child(destinationUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        UserModel userModel=dataSnapshot.getValue(UserModel.class);
+                        Glide.with(customViewHolder.itemView.getContext())
+                                .load(userModel.profileImageUrl)
+                                .apply(new RequestOptions().circleCrop())
+                                .into(customViewHolder.imageView);
+                        customViewHolder.textView_title.setText(userModel.userName);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
 
             Map<String,ChatModel.Comment> commentMap=new TreeMap<>(Collections.reverseOrder());  //메세지를 내림차순으로 정렬
             commentMap.putAll(chatModels.get(i).comments);
 
-            String lastMessageKey=(String) commentMap.keySet().toArray()[0]; //0번째 메세지의 키값을 추출
-            customViewHolder.textView_last.setText(chatModels.get(i).comments.get(lastMessageKey).message);
+            if (commentMap.keySet().toArray().length>0) {
+                String lastMessageKey = (String) commentMap.keySet().toArray()[0]; //0번째 메세지의 키값을 추출
+                customViewHolder.textView_last.setText(chatModels.get(i).comments.get(lastMessageKey).message);
+
+                //TimeStamp
+                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));            //timezone 설정
+                long unixTime = (long) chatModels.get(i).comments.get(lastMessageKey).time; //unixTime으로 시간을 받아옴
+                Date date = new Date(unixTime);
+                customViewHolder.textView_time.setText(simpleDateFormat.format(date));
+            }
 
             customViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                    Intent intent=new Intent(view.getContext(),MessageActivity.class);
-                    intent.putExtra("destinationUid",destinationUsers.get(i));
-
-                    ActivityOptions activityOptions=ActivityOptions.makeCustomAnimation(view.getContext(),R.anim.frombottom,R.anim.totop);
-                    startActivity(intent,activityOptions.toBundle()); //애니메이션 추가
+                    Intent intent=null;
+                    if (chatModels.get(i).users.size()>2){                                       //단체 채팅방일 경우
+                        intent=new Intent(view.getContext(),GroupMessageActivity.class);
+                        intent.putExtra("destinationRoom",keys.get(i));                  //방의 키값을 전달
+                    }else {
+                        if (destinationUsers.get(i)!=null){                                     //개인 채팅방일 경우
+                            intent = new Intent(view.getContext(), MessageActivity.class);
+                            intent.putExtra("destinationUid", destinationUsers.get(i));//유저의 uid를 전달
+                        }
+                    }
+                    ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(view.getContext(), R.anim.frombottom, R.anim.totop);
+                    startActivity(intent, activityOptions.toBundle()); //애니메이션 추가
                 }
             });
-
-            //TimeStamp
-            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-            long unixTime= (long) chatModels.get(i).comments.get(lastMessageKey).time;
-            Date date=new Date(unixTime);
-            customViewHolder.textView_time.setText(simpleDateFormat.format(date));
         }
 
         @Override

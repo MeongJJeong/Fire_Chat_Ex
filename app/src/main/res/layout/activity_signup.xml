@@ -62,6 +62,7 @@
         android:id="@+id/signup_btn_signup"
         android:text="회원가입"
         android:textColor="@color/gray"
-        android:background="@drawable/item_btn_pupple"/>
+        android:background="@drawable/item_btn_pupple"
+        android:clickable="true"/>
 
 </LinearLayout>

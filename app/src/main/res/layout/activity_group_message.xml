@@ -5,23 +5,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".chat.MessageActivity"
     android:orientation="vertical"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"
+    tools:context=".chat.GroupMessageActivity">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:id="@+id/message_toolbar"
+        android:id="@+id/groupmessage_toolbar"
         app:titleTextColor="@color/white">
-
     </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/message_recycle"
+        android:id="@+id/groupmessage_recycle"
         android:layout_weight="1">
 
     </android.support.v7.widget.RecyclerView>
@@ -36,7 +35,7 @@
 
         <EditText
             android:padding="5dp"
-            android:id="@+id/message_edt"
+            android:id="@+id/groupmessage_edt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="19dp"
@@ -47,13 +46,14 @@
             android:layout_weight="1"/>
 
         <Button
-            android:id="@+id/message_btn"
+            android:id="@+id/groupmessage_sendbtn"
             android:layout_width="65dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="전송"
             android:textColor="@color/gray"
             android:background="@drawable/item_btn_yellow" />
+
 
     </LinearLayout>
 

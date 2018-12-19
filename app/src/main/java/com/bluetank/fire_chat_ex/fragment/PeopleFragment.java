@@ -1,11 +1,11 @@
 package com.bluetank.fire_chat_ex.fragment;
 
-//import android.app.Fragment;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,23 +29,31 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeopleFragment extends Fragment {
+public class PeopleFragment extends Fragment{
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_people,container,false);
+        final View view=inflater.inflate(R.layout.fragment_people,container,false);
 
-        RecyclerView recyclerView=(RecyclerView)view.findViewById(R.id.frag_people_recycler);
+        RecyclerView recyclerView=(RecyclerView)view.findViewById(R.id.frag_people_recycler);    //친구 목록을 표현한 recyclerview
         recyclerView.setLayoutManager(new LinearLayoutManager(inflater.getContext()));
         recyclerView.setAdapter(new PeopleFragmentRecyclerViewAdapter());
+
+        FloatingActionButton floatingActionButton=(FloatingActionButton)view.findViewById(R.id.frag_people_floatbtn); //단톡방 생성을 위한 floating button
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(view.getContext(),SelectFriendActivity.class));        //친구 선택 화면으로 이동
+            }
+        });
 
         return view;
     }
 
     class PeopleFragmentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-        List<UserModel> userModels;
+        List<UserModel> userModels;     //유저 정보를 배열 형태로 저장
 
         public PeopleFragmentRecyclerViewAdapter(){
             userModels =new ArrayList<>();
@@ -65,7 +73,6 @@ public class PeopleFragment extends Fragment {
                     }
                     notifyDataSetChanged();//새로고침
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -83,7 +90,7 @@ public class PeopleFragment extends Fragment {
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int i) {
 
-            Glide.with(viewHolder.itemView.getContext())
+            Glide.with(viewHolder.itemView.getContext())            //유저 사진을 Glide를 이용해 불러옴
                     .load(userModels.get(i).profileImageUrl)
                     .apply(new RequestOptions().circleCrop())
                     .into(((CustomViewHolder)viewHolder).image);

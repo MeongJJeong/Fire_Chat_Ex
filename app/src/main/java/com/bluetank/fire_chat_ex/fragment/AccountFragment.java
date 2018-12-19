@@ -40,14 +40,14 @@ import java.util.Map;
 
 public class AccountFragment extends Fragment implements View.OnClickListener {
 
-    Button btnEdt,btnLogout;
-    ImageView imageView;
-    TextView text,name;
+    private Button btnEdt,btnLogout;
+    private ImageView imageView;
+    private TextView text,name;
 
-    FirebaseAuth firebaseAuth;
-    FirebaseUser userAuth;
-    DatabaseReference firebaseDatabase;
-    Animation animation;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser userAuth;
+    private DatabaseReference firebaseDatabase;
+//    Animation animation;
     
     @Nullable
     @Override
@@ -60,14 +60,15 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         text =(TextView)view.findViewById(R.id.frag_account_text);
         name=(TextView)view.findViewById(R.id.frag_account_name) ;
 
-        animation=AnimationUtils.loadAnimation(getContext(),R.anim.swing);
-        animation.setRepeatCount(2);
+//        animation=AnimationUtils.loadAnimation(getContext(),R.anim.swing);
+//        animation.setRepeatCount(2);                       애니메이션 구현 부분, 프로필 이미지 변경 구현시 추가 예정
 
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseDatabase=FirebaseDatabase.getInstance().getReference();
         userAuth=FirebaseAuth.getInstance().getCurrentUser();
 
         FirebaseDatabase.getInstance().getReference().child("user").child(userAuth.getUid()).addValueEventListener(new ValueEventListener() {
+            //유저 정보를 가져오는 코드
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(getActivity()==null){
@@ -77,9 +78,9 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                 Glide.with(AccountFragment.this)
                         .load(userModel.profileImageUrl)
                         .apply(new RequestOptions().circleCrop())
-                        .into(imageView);
-                name.setText(userModel.userName);
-                text.setText(userModel.comment);
+                        .into(imageView);                        //프로필 이미지
+                name.setText(userModel.userName);               //유저 이름
+                text.setText(userModel.comment);                //상태 메세지
             }
 
             @Override
@@ -87,7 +88,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
 
             }
         });
-
         imageView.setOnClickListener(this);
         btnEdt.setOnClickListener(this);
         btnLogout.setOnClickListener(this);
@@ -105,11 +105,11 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
 
         if (v==imageView){
             //프로필 사진 바꾸는 코드 추가 예정
-            Toast.makeText(getContext(),"안녕",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),"안녕",Toast.LENGTH_SHORT).show();  //이스터에그
         }
-        if (v==btnEdt){
+        if (v==btnEdt){     //상태메세지 변경
 
-            editText.setVisibility(View.VISIBLE);
+            editText.setVisibility(View.VISIBLE);       //dialog화면을 로그아웃과 상태메세지 설정 화면이 공유하기 때문에 가시화/비가시화 처리
             textView.setVisibility(View.INVISIBLE);
 
             FirebaseDatabase.getInstance().getReference().child("user").child(userAuth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -142,7 +142,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
             });
             builder.show();
         }
-        if (v==btnLogout){
+        if (v==btnLogout){            //로그아웃
 
             editText.setVisibility(View.INVISIBLE);
             textView.setVisibility(View.VISIBLE);
@@ -151,7 +151,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
 
-                    firebaseAuth.signOut();
+                    firebaseAuth.signOut();         //로그아웃하는 코드
                     Intent intent=new Intent(getContext(),LoginActivity.class);
                     getActivity().finish();
                     startActivity(intent);

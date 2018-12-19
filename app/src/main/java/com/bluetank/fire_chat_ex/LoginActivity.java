@@ -31,27 +31,35 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         mFirebaseAuth=FirebaseAuth.getInstance();
-        //mFirebaseAuth.signOut();  초기화를 위한 로그아웃 부분이나 생략, 대신 account에 버튼생성
+//      mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+//      mFirebaseAuth.signOut();  초기화를 위한 로그아웃 부분이나 생략, 대신 account에 버튼생성
 
-//        String splash_background=mFirebaseRemoteConfig.getString(getString(R.string.rc_color));
-//        getWindow().setStatusBarColor(Color.parseColor(splash_background));
+//      String splash_background=mFirebaseRemoteConfig.getString(getString(R.string.rc_color));
+//      getWindow().setStatusBarColor(Color.parseColor(splash_background));
 
         login=(Button)findViewById(R.id.login_btn_login);
         signup =(Button)findViewById(R.id.login_btn_signup);
-//        login.setBackgroundColor(Color.parseColor(splash_background));
-//        signup.setBackgroundColor(Color.parseColor(splash_background));
+//      login.setBackgroundColor(Color.parseColor(splash_background));
+//      signup.setBackgroundColor(Color.parseColor(splash_background));
         id=(EditText)findViewById(R.id.login_edt_id);
         pw=(EditText)findViewById(R.id.login_edt_pw);
 
+        //로그인 버튼
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loginEvent();
+                if (id.getText().length()==0){
+                    Toast.makeText(getApplicationContext(),"아이디를 입력해 주세요!",Toast.LENGTH_SHORT).show();
+                }else if (pw.getText().length()==0){
+                    Toast.makeText(getApplicationContext(),"비밀번호를 입력해 주세요!",Toast.LENGTH_SHORT).show();
+                }else {
+                    loginEvent();
+                }
             }
         });
 
+        //회원가입 버튼
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,7 +71,6 @@ public class LoginActivity extends AppCompatActivity {
         authStateListener=new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
                 FirebaseUser user=firebaseAuth.getCurrentUser();
                 if(user!=null){
                     //로그인
