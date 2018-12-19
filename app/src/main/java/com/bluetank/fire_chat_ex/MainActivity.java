@@ -15,7 +15,7 @@ import com.bluetank.fire_chat_ex.fragment.PeopleFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    Toolbar toolbar;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +24,6 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar=(Toolbar)findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
-
-
         setTitle("친구");
         BottomNavigationView bottomNavigationView=(BottomNavigationView) findViewById(R.id.main_bottomNavi);
 

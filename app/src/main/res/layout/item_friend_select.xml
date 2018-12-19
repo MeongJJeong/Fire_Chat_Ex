@@ -44,7 +44,6 @@
                 android:textColor="@color/white"
                 android:id="@+id/item_friend_comment"/>
 
-
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

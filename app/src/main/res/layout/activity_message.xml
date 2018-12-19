@@ -46,7 +46,6 @@
             android:focusable="true"
             android:layout_weight="1"/>
 
-
         <Button
             android:id="@+id/message_btn"
             android:layout_width="65dp"
@@ -55,7 +54,6 @@
             android:text="전송"
             android:textColor="@color/gray"
             android:background="@drawable/item_btn_yellow" />
-
 
     </LinearLayout>
 

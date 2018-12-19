@@ -1,10 +1,7 @@
 package com.bluetank.fire_chat_ex.fragment;
 
-import android.app.ActivityOptions;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -25,24 +22,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluetank.fire_chat_ex.R;
-import com.bluetank.fire_chat_ex.SignupActivity;
-import com.bluetank.fire_chat_ex.chat.GroupMessageActivity;
-import com.bluetank.fire_chat_ex.chat.MessageActivity;
 import com.bluetank.fire_chat_ex.model.ChatModel;
 import com.bluetank.fire_chat_ex.model.UserModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -53,15 +44,12 @@ import java.util.List;
 public class SelectFriendActivity extends AppCompatActivity {
 
     private static final int PICK_FROM_ALBUM =10 ;
-    ChatModel chatModel=new ChatModel();
+    private ChatModel chatModel=new ChatModel();
 
-    ImageView imageView;
-    Button button;
-    Toolbar toolbar;
-
+    private ImageView imageView;
+    private Button button;
+    private Toolbar toolbar;
     private Uri imageUri;
-    private String destinationRoom;
-    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +60,8 @@ public class SelectFriendActivity extends AppCompatActivity {
         recyclerView.setAdapter(new SelectFriendRecyclerViewAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        //databaseReference=FirebaseDatabase.getInstance().getReference();
-
         toolbar=(Toolbar)findViewById(R.id.selectFriend_toolbar);
         setSupportActionBar(toolbar);
-
         setTitle("친구 선택");
 
         button=(Button)findViewById(R.id.selectFriend_btn);
@@ -90,7 +75,7 @@ public class SelectFriendActivity extends AppCompatActivity {
 
                 imageView=(ImageView)view.findViewById(R.id.group_image_profile);        //단톡방 이미지
                 final EditText editText=(EditText)view.findViewById(R.id.group_edt_name); //단톡방 이름입력
-                final Button button=(Button)view.findViewById(R.id.group_btn_ok);                //alertdialog의 확인버튼
+                final Button button=(Button)view.findViewById(R.id.group_btn_ok);         //alertdialog의 확인버튼
 
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -231,7 +216,6 @@ public class SelectFriendActivity extends AppCompatActivity {
             }
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode,Intent data) {

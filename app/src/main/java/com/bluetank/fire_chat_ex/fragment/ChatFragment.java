@@ -39,15 +39,15 @@ import java.util.TreeMap;
 
 public class ChatFragment extends Fragment {
 
-    private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("MM.dd hh:mm");
+    private SimpleDateFormat simpleDateFormat=new SimpleDateFormat("MM.dd hh:mm"); //날짜 포멧
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_chat,container,false);
 
-        RecyclerView recyclerView=(RecyclerView)view.findViewById(R.id.frag_chat_recycler);
-        recyclerView.setAdapter(new ChatRecyclerViewAdapter());
+        RecyclerView recyclerView=(RecyclerView)view.findViewById(R.id.frag_chat_recycler);  //채팅방 목록을 표현할 recyclerview
+        recyclerView.setAdapter(new ChatRecyclerViewAdapter());                                 //recyclerview의 viewadapter 설정
         recyclerView.setLayoutManager(new LinearLayoutManager(inflater.getContext()));
 
         return view;
@@ -55,8 +55,8 @@ public class ChatFragment extends Fragment {
 
     class ChatRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-        private List<ChatModel> chatModels=new ArrayList<>();
-        private List<String> keys=new ArrayList<>();
+        private List<ChatModel> chatModels=new ArrayList<>();          //chatmodel 형식의 채팅방 정보 저장
+        private List<String> keys=new ArrayList<>();                    //방에 대한 키 저장
         private String uid;
         private ArrayList<String> destinationUsers=new ArrayList<>(); //대화 할 사람들의 데이터 담김
         public ChatRecyclerViewAdapter() {
@@ -70,7 +70,7 @@ public class ChatFragment extends Fragment {
                         chatModels.add(item.getValue(ChatModel.class));
                         keys.add(item.getKey()); //방에대한 키를 받아옴
                     }
-                    notifyDataSetChanged();
+                    notifyDataSetChanged(); //새로고침
                 }
 
                 @Override
@@ -84,7 +84,6 @@ public class ChatFragment extends Fragment {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             View view=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_chat,viewGroup,false);
-            
             
             return new CustomViewHolder(view);
         }
@@ -153,8 +152,8 @@ public class ChatFragment extends Fragment {
                 customViewHolder.textView_last.setText(chatModels.get(i).comments.get(lastMessageKey).message);
 
                 //TimeStamp
-                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-                long unixTime = (long) chatModels.get(i).comments.get(lastMessageKey).time;
+                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));            //timezone 설정
+                long unixTime = (long) chatModels.get(i).comments.get(lastMessageKey).time; //unixTime으로 시간을 받아옴
                 Date date = new Date(unixTime);
                 customViewHolder.textView_time.setText(simpleDateFormat.format(date));
             }
@@ -163,13 +162,13 @@ public class ChatFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     Intent intent=null;
-                    if (chatModels.get(i).users.size()>2){
+                    if (chatModels.get(i).users.size()>2){                                       //단체 채팅방일 경우
                         intent=new Intent(view.getContext(),GroupMessageActivity.class);
-                        intent.putExtra("destinationRoom",keys.get(i));
+                        intent.putExtra("destinationRoom",keys.get(i));                  //방의 키값을 전달
                     }else {
-                        if (destinationUsers.get(i)!=null){
+                        if (destinationUsers.get(i)!=null){                                     //개인 채팅방일 경우
                             intent = new Intent(view.getContext(), MessageActivity.class);
-                            intent.putExtra("destinationUid", destinationUsers.get(i));
+                            intent.putExtra("destinationUid", destinationUsers.get(i));//유저의 uid를 전달
                         }
                     }
                     ActivityOptions activityOptions = ActivityOptions.makeCustomAnimation(view.getContext(), R.anim.frombottom, R.anim.totop);

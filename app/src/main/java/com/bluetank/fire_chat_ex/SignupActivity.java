@@ -46,9 +46,8 @@ public class SignupActivity extends AppCompatActivity {
         email=(EditText)findViewById(R.id.signup_edt_email);
         pw=(EditText)findViewById(R.id.signup_edt_pw);
         signup=(Button)findViewById(R.id.signup_btn_signup);
-
-
         profile=(ImageView)findViewById(R.id.signup_image_profile);
+
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +72,7 @@ public class SignupActivity extends AppCompatActivity {
 
                     Toast.makeText(getApplicationContext(),"진행중입니다.. 잠시만 기다려주세요",Toast.LENGTH_SHORT).show();
 
-                    str1=email.getText().toString();
+                    str1=email.getText().toString();       //문자열에 저장해야 오류발생이 안된다
                     str2=pw.getText().toString();
                     str3=name.getText().toString();
 
@@ -84,8 +83,8 @@ public class SignupActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
 
                                     final String uid=task.getResult().getUser().getUid();
-
                                     final StorageReference profileImageRef=FirebaseStorage.getInstance().getReference().child("userImages").child(uid);
+
                                     profileImageRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -93,7 +92,7 @@ public class SignupActivity extends AppCompatActivity {
                                             Task<Uri> uriTask=profileImageRef.getDownloadUrl();
                                             while (!uriTask.isSuccessful());
                                             Uri downloadUrl=uriTask.getResult();
-                                            String imageUrl=String.valueOf(downloadUrl);
+                                            String imageUrl=String.valueOf(downloadUrl);        //사진 주소 저장하는 코드
 
                                             UserModel user=new UserModel();
                                             user.userName=str3;
@@ -121,7 +120,7 @@ public class SignupActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode,Intent data) {
        if(requestCode==PICK_FROM_ALBUM&&resultCode==RESULT_OK){
            profile.setImageURI(data.getData()); //가운데 뷰 변경
-           imageUri=data.getData(); //이미지 경로 원본
+           imageUri=data.getData();             //이미지 경로 원본
        }
     }
 }

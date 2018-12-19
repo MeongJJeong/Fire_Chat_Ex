@@ -22,5 +22,4 @@
         android:src="@android:drawable/stat_notify_chat"
         app:fabSize="normal" />
 
-
 </RelativeLayout>

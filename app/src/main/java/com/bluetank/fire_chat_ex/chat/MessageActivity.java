@@ -131,8 +131,8 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
         checkChatRoom();
-
     }
+
     void checkChatRoom(){
         FirebaseDatabase.getInstance().getReference().child("chatrooms").orderByChild("users/"+uid).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
             //orderByChild가 중복을 채크하는 코드
@@ -158,7 +158,7 @@ public class MessageActivity extends AppCompatActivity {
 
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-        List<ChatModel.Comment> comments;
+        List<ChatModel.Comment> comments;  //채팅 내용
         UserModel user;
 
         public RecyclerViewAdapter(){

@@ -45,7 +45,6 @@
             android:focusable="true"
             android:layout_weight="1"/>
 
-
         <Button
             android:id="@+id/groupmessage_sendbtn"
             android:layout_width="65dp"
